@@ -1,19 +1,19 @@
 package main
 
 import (
-	"log"
 	"context"
 	"github.com/yinyin/go-maildock/cmd"
 	"github.com/yinyin/go-maildock/database"
+	"log"
 	"net"
 	"time"
 )
 
 type smtpRunner struct {
-	ctx context.Context
-	dbcfg database.Configuration
+	ctx         context.Context
+	dbcfg       database.Configuration
 	connections <-chan net.Conn
-	listeners []net.Listener
+	listeners   []net.Listener
 }
 
 func (u *smtpRunner) processConnection(netConn net.Conn) {
@@ -35,7 +35,7 @@ func (u *smtpRunner) Run() {
 		case <-u.ctx.Done():
 			log.Print("leaving connection handling loop")
 			return
-		case conn := <- u.connections:
+		case conn := <-u.connections:
 			if nil == conn {
 				continue
 			}
@@ -59,13 +59,13 @@ func setupRunnerWithConfiguration(ctx context.Context) (runner *smtpRunner, err 
 	connections, listeners, err := startListeners(cfg.SMTPListenOn)
 	if nil != err {
 		log.Printf("cannot start listeners: %v", err)
-		return nil,err
+		return nil, err
 	}
 	runner = &smtpRunner{
-		ctx: ctx,
-		dbcfg: cfg.Database.Config,
+		ctx:         ctx,
+		dbcfg:       cfg.Database.Config,
 		connections: connections,
-		listeners: listeners,
+		listeners:   listeners,
 	}
 	return runner, nil
 }

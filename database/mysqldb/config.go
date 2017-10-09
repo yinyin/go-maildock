@@ -6,14 +6,14 @@ import (
 )
 
 type mysqlConfiguration struct {
-	DSN []string	`yaml:"dsn"`
+	DSN []string `yaml:"dsn"`
 }
 
 func NewEmptyConfiguration() (r database.Configuration) {
-	return &mysqlConfiguration {}
+	return &mysqlConfiguration{}
 }
 
-func (c * mysqlConfiguration) OpenConnection() (conn database.Connection, err error) {
+func (c *mysqlConfiguration) OpenConnection() (conn database.Connection, err error) {
 	l := len(c.DSN)
 	shuffleDSN := make([]string, l)
 	copy(shuffleDSN, c.DSN)

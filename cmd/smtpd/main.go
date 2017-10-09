@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
 	"context"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"

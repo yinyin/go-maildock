@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	yaml "gopkg.in/yaml.v2"
-	"io/ioutil"
 	"github.com/yinyin/go-maildock/database"
 	"github.com/yinyin/go-maildock/database/locator"
+	yaml "gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
 type databaseSetup struct {
@@ -12,9 +12,9 @@ type databaseSetup struct {
 	Config       database.Configuration
 }
 
-func (d * databaseSetup) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+func (d *databaseSetup) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	var dbType = struct {
-		Type string	`yaml:"type"`
+		Type string `yaml:"type"`
 	}{}
 	if err = unmarshal(&dbType); nil != err {
 		return err
@@ -24,22 +24,22 @@ func (d * databaseSetup) UnmarshalYAML(unmarshal func(interface{}) error) (err e
 		return err
 	} else if err = unmarshal(cfg); nil != err {
 		return err
-	} else  {
+	} else {
 		d.Config = cfg
 	}
 	return nil
 }
 
 type Configuration struct {
-	SMTPListenOn []string	`yaml:"smtp-listen"`
-	HTTPListenOn string	`yaml:"http-listen"`
-	HTTPContent struct {
-		Path string `yaml:"path"`
-		Prefix string `yaml:"prefix"`
+	SMTPListenOn []string `yaml:"smtp-listen"`
+	HTTPListenOn string   `yaml:"http-listen"`
+	HTTPContent  struct {
+		Path    string `yaml:"path"`
+		Prefix  string `yaml:"prefix"`
 		ProxyTo string `yaml:"proxy-to"`
 	} `yaml:"http-content"`
-	Database databaseSetup `yaml:"database"`
-	PurgeDays int `yaml:"purge-days"`
+	Database  databaseSetup `yaml:"database"`
+	PurgeDays int           `yaml:"purge-days"`
 }
 
 func makeDefaultConfiguration() (cfg *Configuration) {
@@ -48,7 +48,7 @@ func makeDefaultConfiguration() (cfg *Configuration) {
 	}
 }
 
-func LoadConfigurationFromFile(filePath string) (cfg * Configuration, err error) {
+func LoadConfigurationFromFile(filePath string) (cfg *Configuration, err error) {
 	buf, err := ioutil.ReadFile(filePath)
 	if nil != err {
 		return nil, err

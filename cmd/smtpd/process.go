@@ -1,13 +1,13 @@
 package main
 
 import (
-	"net"
 	"context"
 	"github.com/siebenmann/smtpd"
-	"os"
-	"log"
-	"net/mail"
 	"github.com/yinyin/go-maildock/database"
+	"log"
+	"net"
+	"net/mail"
+	"os"
 )
 
 var smtpConfig smtpd.Config = smtpd.Config{
@@ -24,21 +24,21 @@ func init() {
 }
 
 type smtpProcessor struct {
-	conn * smtpd.Conn
-	heloName string
+	conn        *smtpd.Conn
+	heloName    string
 	fromAddress *mail.Address
 	toAddresses []*mail.Address
 }
 
-func newSMTPProcessor(conn net.Conn) (p * smtpProcessor) {
+func newSMTPProcessor(conn net.Conn) (p *smtpProcessor) {
 	smtpConn := smtpd.NewConn(conn, smtpConfig, nil)
 	return &smtpProcessor{
-		conn: smtpConn,
+		conn:        smtpConn,
 		toAddresses: make([]*mail.Address, 0),
 	}
 }
 
-func (p * smtpProcessor) handleCommand(evt * smtpd.EventInfo) {
+func (p *smtpProcessor) handleCommand(evt *smtpd.EventInfo) {
 	switch evt.Cmd {
 	case smtpd.EHLO, smtpd.HELO:
 		p.heloName = evt.Arg
@@ -67,7 +67,7 @@ func (p * smtpProcessor) handleCommand(evt * smtpd.EventInfo) {
 	}
 }
 
-func (p * smtpProcessor) handleData(ctx context.Context, evt * smtpd.EventInfo, dbconn database.Connection) {
+func (p *smtpProcessor) handleData(ctx context.Context, evt *smtpd.EventInfo, dbconn database.Connection) {
 	data := evt.Arg
 	if err := dbconn.AppendMail(ctx, p.fromAddress, p.toAddresses, data); nil != err {
 		log.Printf("failed on put mail record into database: %v", err)
@@ -75,8 +75,7 @@ func (p * smtpProcessor) handleData(ctx context.Context, evt * smtpd.EventInfo, 
 	}
 }
 
-
-func (p * smtpProcessor) Process(ctx context.Context, dbconn database.Connection) {
+func (p *smtpProcessor) Process(ctx context.Context, dbconn database.Connection) {
 	for {
 		evt := p.conn.Next()
 		switch evt.What {

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net"
-	"log"
 	"errors"
+	"log"
+	"net"
 )
 
 func listener(l net.Listener, q chan<- net.Conn) {

@@ -1,32 +1,31 @@
 package main
 
 import (
+	"context"
 	maildock "github.com/yinyin/go-maildock"
 	"github.com/yinyin/go-maildock/cmd"
-	utilhttphandlers "github.com/yinyin/go-util-http-handlers"
-	"net/http"
-	"strings"
-	"log"
 	"github.com/yinyin/go-maildock/database"
-	"context"
-	"time"
+	utilhttphandlers "github.com/yinyin/go-util-http-handlers"
 	"io"
-	"net/url"
+	"log"
+	"net/http"
 	"net/http/httputil"
+	"net/url"
+	"strings"
+	"time"
 )
-
 
 type searchResult struct {
 	QueryAddress string
-	Records []*maildock.MailRecord
+	Records      []*maildock.MailRecord
 }
 
 type maildockDisplayHandler struct {
-	dbCfg database.Configuration
+	dbCfg                database.Configuration
 	staticContentHandler http.Handler
 }
 
-func (d * maildockDisplayHandler) handleSearch(w http.ResponseWriter, r * http.Request) {
+func (d *maildockDisplayHandler) handleSearch(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	c := strings.SplitN(path, "/", 3)
 	if len(c) < 3 {
@@ -44,15 +43,15 @@ func (d * maildockDisplayHandler) handleSearch(w http.ResponseWriter, r * http.R
 	defer cancel()
 	records, err := dbconn.SearchForRecipient(ctx, queryRecipientAddress)
 	var result = struct {
-		QueryAddress string	`json:"query_address"`
-		Records []*maildock.MailRecord	`json:"records"`
-	} {
+		QueryAddress string                 `json:"query_address"`
+		Records      []*maildock.MailRecord `json:"records"`
+	}{
 		QueryAddress: queryRecipientAddress,
-		Records: records,}
+		Records:      records}
 	utilhttphandlers.JSONResponse(w, result)
 }
 
-func (d * maildockDisplayHandler) ServeHTTP(w http.ResponseWriter, r * http.Request) {
+func (d *maildockDisplayHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	if strings.HasPrefix(path, "/search") {
 		d.handleSearch(w, r)
@@ -63,7 +62,7 @@ func (d * maildockDisplayHandler) ServeHTTP(w http.ResponseWriter, r * http.Requ
 	}
 }
 
-func (d * maildockDisplayHandler) Close() {
+func (d *maildockDisplayHandler) Close() {
 	if nil != d.staticContentHandler {
 		if closer, ok := d.staticContentHandler.(io.Closer); ok {
 			closer.Close()
@@ -72,7 +71,7 @@ func (d * maildockDisplayHandler) Close() {
 	}
 }
 
-func makeStaticContentHandler(cfg * cmd.Configuration) (handler http.Handler) {
+func makeStaticContentHandler(cfg *cmd.Configuration) (handler http.Handler) {
 	contentCfg := cfg.HTTPContent
 	if "" != contentCfg.Path {
 		if zipContentHandler, err := utilhttphandlers.NewZipArchiveContentServer(contentCfg.Path, contentCfg.Prefix, "index.html"); nil != err {
@@ -93,9 +92,9 @@ func makeStaticContentHandler(cfg * cmd.Configuration) (handler http.Handler) {
 	return nil
 }
 
-func newMailDockDisplayHandlerFromConfiguration(cfg * cmd.Configuration) (h * maildockDisplayHandler) {
-	return &maildockDisplayHandler {
-		dbCfg: cfg.Database.Config,
+func newMailDockDisplayHandlerFromConfiguration(cfg *cmd.Configuration) (h *maildockDisplayHandler) {
+	return &maildockDisplayHandler{
+		dbCfg:                cfg.Database.Config,
 		staticContentHandler: makeStaticContentHandler(cfg),
 	}
 }

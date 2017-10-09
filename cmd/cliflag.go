@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"flag"
 	"errors"
-	"log"
+	"flag"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"log"
 )
 
 func setupLogging(logFilePath string) {
@@ -16,7 +16,7 @@ func setupLogging(logFilePath string) {
 	})
 }
 
-func LoadConfigurationWithFlags() (cfg * Configuration, err error) {
+func LoadConfigurationWithFlags() (cfg *Configuration, err error) {
 	const defaultConfigFilePath = "/opt/maildock-1/etc/config.yaml"
 	const usageConfigFilePath = "Path of configuration file."
 	var configFilePath string
