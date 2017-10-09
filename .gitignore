@@ -24,4 +24,13 @@ Icon
 ._*
 .Spotlight-V100
 .Trashes
+.idea
+
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+.glide/
 
