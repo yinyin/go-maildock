@@ -1,0 +1,17 @@
+[Unit]
+Description=MailDock display interface (HTTP) server
+Documentation=https://github.com/yinyin/go-maildock/
+After=network.target
+
+[Service]
+PermissionsStartOnly=true
+LimitNOFILE=8192
+User=maildock
+WorkingDirectory=/opt/maildock
+ExecStartPre=/sbin/setcap cap_net_bind_service=+ep /opt/maildock/bin/httpd
+ExecStart=/opt/maildock/bin/httpd -conf=/opt/maildock/etc/config.yaml
+ExecReload=/bin/kill -SIGINT $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
