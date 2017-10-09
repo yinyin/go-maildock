@@ -1,5 +1,11 @@
 # Installation
 
+Build binaries into `/opt/maildock`:
+
+~~~
+GOPATH=/opt/maildock go install github.com/yinyin/go-maildock/cmd/...
+~~~
+
 Setup user `maildock` with home folder `/opt/maildock`:
 
 ~~~
